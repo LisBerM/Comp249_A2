@@ -1,71 +1,23 @@
 package org.example;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 import java.util.Arrays;
 
 public class Main {
-//---------------------------------------------
-//    /**
-//     *
-//     * @param inputFilesNames this method reads the file part1_input_file_names.txt that contains all the csv files inside.
-//     * @return
-//     */
-//    private static String[] readInputFileNames(String inputFilesNames) {
-//        String Part1_txt = "part1_input_file_names.txt";
-//        String[] csvFiles = new String[100];
-//        int i = 0;
-//        try (BufferedReader reader = new BufferedReader(new FileReader(Part1_txt))) {
-//            String line = reader.readLine(); //reads the number which is n of top of part1_input_file_names.txt
-//            while ((line = reader.readLine()) != null) { //Keeps reading the line till it reaches an empty line
-//                csvFiles[i++] = line.trim();
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error reading the main input file: " + e.getMessage());
-//
-//
-//        }
-//        return Arrays.copyOf(csvFiles, i);
-//    }
-//
-//    private static void CsvFileEmpty(String csvFilePath) {
-//
-//        try {
-//            long lineCount = Files.lines(Paths.get(csvFilePath)).count();
-//            if (lineCount == 0) {
-//                System.out.println("The CSV file " + csvFilePath + " is empty.");
-//            } else {
-//                System.out.println("The CSV file " + csvFilePath + " is not empty.");
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error reading the CSV file " + csvFilePath + ": " + e.getMessage());
-//        }
-//    }
-//     public static void do_part1()
-//     {
-//     String Part1_txt = "part1_input_file_names.txt";
-//     String [] csvFilePaths = readInputFileNames(Part1_txt);
-//        for (int i =0 ; i< csvFilePaths.length && csvFilePaths[i] != null; i++){
-//            CsvFileEmpty(csvFilePaths[i]);
-//        }
-//     }
-//---------------------------------------------------
-// ---------------------------------------------------
 
-
+    /**
+     * @param fileName
+     * @return
+     */
     public static boolean is_empty(String fileName) {
         boolean isEmpty = false;
         //     long lineCount = Files.lines(Paths.get(csvFilePath)).count();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             long lineCount = reader.lines().count();
-            if (lineCount == 0 ) {
+            if (lineCount == 0) {
                 isEmpty = true;
-                System.out.println("FIle is empty " + fileName);
+                System.out.println("File is empty " + fileName);
             }
 
         } catch (FileNotFoundException e) {
@@ -79,7 +31,7 @@ public class Main {
      * @param fileName
      * @return
      */
-    public static String[] fileReader(String fileName)// Function to check if its empty or not
+    public static String[] inputFileReader(String fileName)// Function to check if its empty or not
     {
         String[] arrayCsvFiles = null;
         try {
@@ -102,56 +54,106 @@ public class Main {
         } catch (IOException e) {
             System.out.println("IO exception");
         }
-     return arrayCsvFiles;
+        return arrayCsvFiles;
     }
 
-    public static void do_part1() {
-        String[] arr = fileReader("part1_input_file_names.txt");
-        for (String file : arr) {
-            is_empty(file);
+    public static void CSVReader(String fileName) {
+        String[] arrayCsvFiles = null;
+        BufferedReader reader = null;
+        //PrintWriter csvWriter = null;
+        File Cartoon_Comics = new File("outputFiles/Cartoons_Comics.csv");
+        File Hobbies_Collectives = new File("outputFiles/Hobbies_Collectives.csv");
+        File Movies_Tv_Books = new File("outputFiles/Movies_Tv_Books.csv");
+        File Music_Radio_Books = new File("outputFiles/Music_Radio_Books.csv");
+        File Nostalgia_Eclectic_Books = new File("outputFiles/Nostalgia_Eclectic_Books.csv");
+        File Old_Time_Radio_Books = new File("outputFiles/Old_Time_Radio_Books.csv");
+        File Sports_Sports_Memorabilia = new File("outputFiles/Sports_Sports_Memorabilia.csv");
+        File Trains_Planes_Automobiles = new File("outputFiles/Trains_Planes_Automobiles.csv");
+        File syntax_error_file = new File("outputFiles/syntax_error_file.txt");
+        try {
+            //File csvEmpty = new File("books1996.csv.txt");
+            reader = new BufferedReader(new FileReader(fileName));
+            //csvWriter = new PrintWriter(new FileOutputStream(new File("/outputFiles/Cartoons_Comics.csv"),true));
+
+            String line;
+            int counter = 0;
+
+            while ((line = reader.readLine()) != null) {
+                arrayCsvFiles = line.split(",");
+                try {
+                    if (arrayCsvFiles.length > 6) {
+                        throw new TooManyFieldsException(" Too many fields in " + Arrays.toString(arrayCsvFiles));
+                    }
+                    if (arrayCsvFiles.length <= 5) {
+                        throw new TooFewFieldsException(" Too few fields in " + Arrays.toString(arrayCsvFiles));
+                    }
+                } catch (TooManyFieldsException | TooFewFieldsException e) {
+                    System.out.println(e);
+                }
+
+                PrintWriter csvWriter = null;
 
 
+                switch (arrayCsvFiles[4]) {
+                    case "CCB":
+                        csvWriter = new PrintWriter(new FileOutputStream(Cartoon_Comics, true));
+                        csvWriter.print(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "HCB":
+                        csvWriter = new PrintWriter(new FileOutputStream(Hobbies_Collectives, true));
+                        csvWriter.print(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "MTV":
+                        csvWriter = new PrintWriter(new FileOutputStream(Movies_Tv_Books, true));
+                        csvWriter.print(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "MRB":
+                        csvWriter = new PrintWriter(new FileOutputStream(Music_Radio_Books, true));
+                        csvWriter.print(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "NEB":
+                        csvWriter = new PrintWriter(new FileOutputStream(Nostalgia_Eclectic_Books, true));
+                        csvWriter.print(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "OTR":
+                        csvWriter = new PrintWriter(new FileOutputStream(Old_Time_Radio_Books, true));
+                        csvWriter.print(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "SSM":
+                        csvWriter = new PrintWriter(new FileOutputStream(Sports_Sports_Memorabilia, true));
+                        csvWriter.println(Arrays.toString(arrayCsvFiles));
+                        break;
+                    case "TPA":
+                        csvWriter = new PrintWriter(new FileOutputStream(Trains_Planes_Automobiles, true));
+                        csvWriter.println(Arrays.toString(arrayCsvFiles));
+                        break;
+                }
+
+                if (csvWriter != null) {
+                    csvWriter.println(Arrays.toString(arrayCsvFiles));
+                    csvWriter.close();
+                }
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("CSVReader files not found" + e);
+        } catch (IOException e) {
+            System.out.println("IO exception");
         }
     }
 
-    //---OG
+    public static void do_part1() {
+        String[] arr = inputFileReader("part1_input_file_names.txt");
+        for (String file : arr) {
+            if (!is_empty(file)) {
+                CSVReader(file);
+            }
+        }
 
-
-//        public static void do_part1() //throws IOException
-//        {
-//            try{
-//
-//                BufferedReader reader = new BufferedReader(new FileReader("part1_input_file_names.txt"));
-//
-//                String line = reader.readLine(); // first line is always the amount of texts
-//                int counter = 0;
-//                String [] csvFiles = new String[Integer.parseInt(line)];
-//                while((line = reader.readLine()) != null)
-//                {
-//                    //System.out.println(line);
-//                    csvFiles[counter] = line;
-//                    counter++;
-//                }
-//
-//                for (String item: csvFiles) {
-//                    System.out.println(item);
-//                }
-//
-//                reader.close();
-//
-//            }
-//            catch (FileNotFoundException e){
-//                System.out.println("part1 input files not found");
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//
-//
-//        }
+    }
 
 
     public static void main(String[] args) {
-
 
         //csvReader();
         do_part1();
