@@ -1,6 +1,8 @@
 package org.example;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book  implements Serializable {
 
     private String title;
     private String authors;
@@ -77,6 +79,18 @@ public class Book {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", authors='" + authors + '\'' +
+                ", price=" + price +
+                ", isbn='" + isbn + '\'' +
+                ", genre='" + genre + '\'' +
+                ", year=" + year +
+                '}';
     }
 
     public boolean isEmpty() {

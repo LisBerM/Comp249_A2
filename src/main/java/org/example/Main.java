@@ -91,40 +91,41 @@ public class Main {
                         switch (arrayCsvFiles[4]) {
                             case "CCB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Cartoon_Comics, true));
-                                csvWriter.print(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "HCB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Hobbies_Collectives, true));
-                                csvWriter.print(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "MTV":
                                 csvWriter = new PrintWriter(new FileOutputStream(Movies_Tv_Books, true));
-                                csvWriter.print(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "MRB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Music_Radio_Books, true));
-                                csvWriter.print(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "NEB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Nostalgia_Eclectic_Books, true));
-                                csvWriter.print(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "OTR":
                                 csvWriter = new PrintWriter(new FileOutputStream(Old_Time_Radio_Books, true));
-                                csvWriter.print(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "SSM":
                                 csvWriter = new PrintWriter(new FileOutputStream(Sports_Sports_Memorabilia, true));
-                                csvWriter.println(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.println(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "TPA":
                                 csvWriter = new PrintWriter(new FileOutputStream(Trains_Planes_Automobiles, true));
-                                csvWriter.println(Arrays.toString(arrayCsvFiles));
+//                                csvWriter.println(Arrays.toString(arrayCsvFiles));
                                 break;
                         }
 
                         if (csvWriter != null) {
-                            csvWriter.println(Arrays.toString(arrayCsvFiles));
+                            String csvLine = String.join(",", arrayCsvFiles); // Proper CSV format
+                            csvWriter.println(csvLine);
                             csvWriter.close();
                         }
                     }
@@ -228,46 +229,53 @@ public class Main {
                     else {
                         //ObjectOutputStream ous = null;
                         Book book = new Book(arrayCsvFiles[0], arrayCsvFiles[1], Double.parseDouble(arrayCsvFiles[2]), arrayCsvFiles[3], arrayCsvFiles[4], Year);
-
-                        switch (arrayCsvFiles[4]) {
+                        switch (book.getGenre()) {
                             case "CCB":
 //                                ous = new ObjectOutputStream(Cartoon_Comics);
 //                                ous.writeObject(book);
+                                System.out.println(book.toString());
                                 Cartoon_Comics.writeObject(book);
                                 break;
                             case "HCB":
 //                                ous = new ObjectOutputStream(Hobbies_Collectives);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Hobbies_Collectives.writeObject(book);
                                 break;
                             case "MTV":
 //                                ous = new ObjectOutputStream(Movies_Tv_Books);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Movies_Tv_Books.writeObject(book);
                                 break;
                             case "MRB":
 //                                ous = new ObjectOutputStream(Music_Radio_Books);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Music_Radio_Books.writeObject(book);
                                 break;
                             case "NEB":
 //                                ous = new ObjectOutputStream(Nostalgia_Eclectic_Books);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Nostalgia_Eclectic_Books.writeObject(book);
                                 break;
                             case "OTR":
 //                                ous = new ObjectOutputStream(Old_Time_Radio_Books);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Old_Time_Radio_Books.writeObject(book);
                                 break;
                             case "SSM":
 //                                ous = new ObjectOutputStream(Sports_Sports_Memorabilia);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Sports_Sports_Memorabilia.writeObject(book);
                                 break;
                             case "TPA":
 //                                ous = new ObjectOutputStream(Trains_Planes_Automobiles);
 //                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
+                                System.out.println(book.toString());
                                 Trains_Planes_Automobiles.writeObject(book);
                                 break;
                         }
@@ -306,13 +314,17 @@ public class Main {
     }
 
     public static Book[] deserialize(ObjectInputStream fileName) {
-        Book[] books = new Book[10];
+        Book[] books = new Book[100];
         int counter = 0;
 
         try {
             while (true) {
                 Book book = (Book) fileName.readObject();
-                books[counter] = new Book(book); //using copy construtor from Book class to make a deep copy the objects in the files input
+                if (book == null) {
+                    System.out.println("Error Null book");
+                    break; // Break if a null book is encountered
+                }
+                books[counter] = new Book(book); // Using copy constructor
                 counter++;
             }
         } catch (EOFException e) {
@@ -355,10 +367,10 @@ public class Main {
             for (Book[] item : bookFiles) {
                 int bookCounter = 0;
                 for (Book innerItem : item) {
-                    if (innerItem.isEmpty() )
+                    if (innerItem != null && !innerItem.isEmpty() )
                         bookCounter++;
                 }
-                System.out.println("items in book: " + item.length);
+                System.out.println("items in book List: " + bookCounter);
             }
         } catch (FileNotFoundException e) {
             System.out.println(e);
