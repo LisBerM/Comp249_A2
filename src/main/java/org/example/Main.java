@@ -181,19 +181,22 @@ public class Main {
 
             String line;
             int counter = 0;
-
+            int Year=0;
             while ((line = reader.readLine()) != null) {
                 arrayCsvFiles = line.split(",");
-                int Year = Integer.parseInt(arrayCsvFiles[5].replaceAll("\\D", ""));
+                String yearString = arrayCsvFiles[5].replaceAll("\\D", "");
+
                 double price = Double.parseDouble(arrayCsvFiles[2]);
                 try {
                     if (price < 0) {
                         throw new BadPriceException("The price is negative. Bad Price!");
                     }
-                    if ((Year < 1995) || (Year > 2010)) {
-                        throw new BadYearException("Year out of Range.");
+                    if (yearString.length() == 4) {
+                         Year = Integer.parseInt(yearString);
+                        if ((Year < 1995) || (Year > 2010)) {
+                            throw new BadYearException("Year out of Range.");
+                        }
                     }
-
                     if (arrayCsvFiles[3].length() - 1 == 10) {
                         int sum = 0;
                         for (int i = 0; i < 10; i++) {
@@ -296,82 +299,81 @@ public class Main {
     }
 
     public static void do_part2() {
-//        CSVReaderPart2("outputFiles/Sports_Sports_Memorabilia.csv");
         String[] arr = {"outputFiles/Cartoons_Comics.csv", "outputFiles/Hobbies_Collectibles.csv", "outputFiles/Movies_TV_Books.csv", "outputFiles/Music_Radio_Books.csv", "outputFiles/Nostalgia_Eclectic_Books.csv", "outputFiles/Old_Time_Radio_Books.csv", "outputFiles/Sports_Sports_Memorabilia.csv", "outputFiles/Trains_Planes_Automobiles.csv"};
         for (String item : arr){
             CSVReaderPart2(item);
         }
     }
 
-//    public static Book[] deserialize(ObjectInputStream fileName) {
-//        Book[] books = new Book[10];
-//        int counter = 0;
-//
-//        try {
-//            while (true) {
-//                Book book = (Book) fileName.readObject();
-//                books[counter] = new Book(book); //using copy constructor from Book class to make a deep copy the objects in the files input
-//                counter++;
-//            }
-//        } catch (EOFException e) {
-//            System.out.println("EOF has been reached");
-//        } catch (IOException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return books;
-//    }
-//
-//    public static void do_part3() {
-//        ObjectInputStream[] filenames;
-//        Book bookFiles[][] = new Book[8][10]; // array of arrays
-//        int counter = 0;
-//        try {
-//            filenames = new ObjectInputStream[8];
-//            filenames[0] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Cartoons_Comics.csv.ser"));
-//            filenames[1] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Hobbies_Collectives.csv.ser"));
-//            filenames[2] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Movies_Tv_Books.csv.ser"));
-//            filenames[3] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Music_Radio_Books.csv.ser"));
-//            filenames[4] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Nostalgia_Eclectic_Books.csv.ser"));
-//            filenames[5] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Old_Time_Radio_Books.csv.ser"));
-//            filenames[6] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Sports_Sports_Memorabilia.csv.ser"));
-//            filenames[7] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser"));
-//
-//            for (ObjectInputStream item : filenames) {
-//                bookFiles[counter] = deserialize(item);
-//                counter++;
-//            }
-//
-//            //For each loop to close files
-//            for (ObjectInputStream item : filenames) {
-//                item.close();
-//            }
-//
-//
-//            // Count amount of books in lists
-//
-//            for (Book[] item : bookFiles) {
-//                int bookCounter = 0;
-//                for (Book innerItem : item) {
-//                    if (innerItem.isEmpty() )
-//                        bookCounter++;
-//                }
-//                System.out.println("items in book: " + item.length);
-//            }
-//        } catch (FileNotFoundException e) {
-//            System.out.println(e);
-//        } catch (IOException e) {
-//            System.out.println(e);
-//        }
-//
-//    }
+    public static Book[] deserialize(ObjectInputStream fileName) {
+        Book[] books = new Book[10];
+        int counter = 0;
+
+        try {
+            while (true) {
+                Book book = (Book) fileName.readObject();
+                books[counter] = new Book(book); //using copy construtor from Book class to make a deep copy the objects in the files input
+                counter++;
+            }
+        } catch (EOFException e) {
+            System.out.println("EOF has been reached");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return books;
+    }
+
+    public static void do_part3() {
+        ObjectInputStream[] filenames;
+        Book bookFiles[][] = new Book[8][10]; // array of arrays
+        int counter = 0;
+        try {
+            filenames = new ObjectInputStream[8];
+            filenames[0] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Cartoons_Comics.csv.ser"));
+            filenames[1] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Hobbies_Collectives.csv.ser"));
+            filenames[2] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Movies_Tv_Books.csv.ser"));
+            filenames[3] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Music_Radio_Books.csv.ser"));
+            filenames[4] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Nostalgia_Eclectic_Books.csv.ser"));
+            filenames[5] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Old_Time_Radio_Books.csv.ser"));
+            filenames[6] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Sports_Sports_Memorabilia.csv.ser"));
+            filenames[7] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser"));
+
+            for (ObjectInputStream item : filenames) {
+                bookFiles[counter] = deserialize(item);
+                counter++;
+            }
+
+            //For each loop to close files
+            for (ObjectInputStream item : filenames) {
+                item.close();
+            }
+
+
+            // Count amount of books in lists
+
+            for (Book[] item : bookFiles) {
+                int bookCounter = 0;
+                for (Book innerItem : item) {
+                    if (innerItem.isEmpty() )
+                        bookCounter++;
+                }
+                System.out.println("items in book: " + item.length);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+    }
 
     public static void main(String[] args) {
 
         //csvReader();
         do_part1();
         do_part2();
-//        do_part3();
+        do_part3();
 
 
     }
