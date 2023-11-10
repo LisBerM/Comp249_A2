@@ -278,12 +278,11 @@ public class Main {
                                 System.out.println(book.toString());
                                 Trains_Planes_Automobiles.writeObject(book);
                                 break;
+                            default:
+                                reader.close();
                         }
 
-//                        if (ous != null) {
-//                           // ous.writeUTF(Arrays.toString(arrayCsvFiles));
-//                            ous.close();
-//                        }
+
                     }
                 } catch (BadPriceException e) {
                     System.out.println("Bad Price Exception");
