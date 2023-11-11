@@ -163,151 +163,154 @@ public class Main {
      * @param fileName
      */
     public static void CSVReaderPart2(String fileName) {
-        String[] arrayCsvFiles = null;
         BufferedReader reader = null;
-        //PrintWriter csvWriter = null;
-
-        File syntax_error_file = new File("outputFiles/semantic_error_file.txt");
+        ObjectOutputStream[] outputStreams = new ObjectOutputStream[8];
         try {
-
-            ObjectOutputStream Cartoon_Comics = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Cartoons_Comics.csv.ser"));
-            ObjectOutputStream Hobbies_Collectives = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Hobbies_Collectives.csv.ser"));
-            ObjectOutputStream Movies_Tv_Books = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Movies_Tv_Books.csv.ser"));
-            ObjectOutputStream Music_Radio_Books = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Music_Radio_Books.csv.ser"));
-            ObjectOutputStream Nostalgia_Eclectic_Books = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Nostalgia_Eclectic_Books.csv.ser"));
-            ObjectOutputStream Old_Time_Radio_Books = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Old_Time_Radio_Books.csv.ser"));
-            ObjectOutputStream Sports_Sports_Memorabilia = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Sports_Sports_Memorabilia.csv.ser"));
-            ObjectOutputStream Trains_Planes_Automobiles = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser"));
             reader = new BufferedReader(new FileReader(fileName));
-
             String line;
-            int counter = 0;
-            int Year=0;
+            int Year = 0;
+
+
             while ((line = reader.readLine()) != null) {
-                arrayCsvFiles = line.split(",");
-                String yearString = arrayCsvFiles[5].replaceAll("\\D", "");
 
+                outputStreams[0] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Cartoons_Comics.csv.ser", true));
+                outputStreams[1] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Hobbies_Collectives.csv.ser", true));
+                outputStreams[2] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Movies_Tv_Books.csv.ser", true));
+                outputStreams[3] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Music_Radio_Books.csv.ser", true));
+                outputStreams[4] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Nostalgia_Eclectic_Books.csv.ser", true));
+                outputStreams[5] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Old_Time_Radio_Books.csv.ser", true));
+                outputStreams[6] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Sports_Sports_Memorabilia.csv.ser", true));
+                outputStreams[7] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser", true));
+
+                String[] arrayCsvFiles = line.split(",");
+                String yearString = arrayCsvFiles[5].replaceAll("\\D+", "");
                 double price = Double.parseDouble(arrayCsvFiles[2]);
-                try {
-                    if (price < 0) {
-                        throw new BadPriceException("The price is negative. Bad Price!");
-                    }
-                    if (yearString.length() == 4) {
-                         Year = Integer.parseInt(yearString);
-                        if ((Year < 1995) || (Year > 2010)) {
-                            throw new BadYearException("Year out of Range.");
-                        }
-                    }
-                    if (arrayCsvFiles[3].length() - 1 == 10) {
-                        int sum = 0;
-                        for (int i = 0; i < 10; i++) {
-                            char num = arrayCsvFiles[3].charAt(i);
-                            int asciiValue = num - 48;
-                            sum += asciiValue;
-                        }
-                        if (sum % 11 != 0) { // If not multiple of 11 throw an exception
-                            throw new BadIsbn10Exception("Bad ISBN-10 exception");
-                        }
-                    }
-                    if (arrayCsvFiles[3].length() - 1 == 13) {
-                        int sum = 0;
-                        for (int i = 1; i < arrayCsvFiles[3].length(); i++) {
-                            char num = arrayCsvFiles[3].charAt(i);
-                            int asciiValue = num - 48;
-                            sum += asciiValue;
-                        }
-                        if (sum % 13 != 0) { // If not multiple of 13 throw an exception
-                            throw new BadIsbn13Exception("Bad ISBN-13 exception");
-                        }
 
+                if (price < 0) {
+                    throw new BadPriceException("The price is negative. Bad Price!");
+                }
+                if (yearString.length() == 4) {
+                    Year = Integer.parseInt(yearString);
+                    if ((Year < 1995) || (Year > 2010)) {
+                        throw new BadYearException("Year out of Range.");
                     }
-                    //CONTINUAR AQUI
-                    //====================================================
-                    // convertir a book obj y serializar aqui hacer eqals y toString en Book
-                    // ous.writeUTF(Arrays.toString(arrayCsvFiles)); checkee porque esta array to string??
-                    //================================================
-                    else {
-                        //ObjectOutputStream ous = null;
-                        Book book = new Book(arrayCsvFiles[0], arrayCsvFiles[1], Double.parseDouble(arrayCsvFiles[2]), arrayCsvFiles[3], arrayCsvFiles[4], Year);
-                        switch (book.getGenre()) {
-                            case "CCB":
-//                                ous = new ObjectOutputStream(Cartoon_Comics);
-//                                ous.writeObject(book);
-                                System.out.println(book.toString());
-                                Cartoon_Comics.writeObject(book);
-                                break;
-                            case "HCB":
-//                                ous = new ObjectOutputStream(Hobbies_Collectives);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Hobbies_Collectives.writeObject(book);
-                                break;
-                            case "MTV":
-//                                ous = new ObjectOutputStream(Movies_Tv_Books);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Movies_Tv_Books.writeObject(book);
-                                break;
-                            case "MRB":
-//                                ous = new ObjectOutputStream(Music_Radio_Books);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Music_Radio_Books.writeObject(book);
-                                break;
-                            case "NEB":
-//                                ous = new ObjectOutputStream(Nostalgia_Eclectic_Books);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Nostalgia_Eclectic_Books.writeObject(book);
-                                break;
-                            case "OTR":
-//                                ous = new ObjectOutputStream(Old_Time_Radio_Books);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Old_Time_Radio_Books.writeObject(book);
-                                break;
-                            case "SSM":
-//                                ous = new ObjectOutputStream(Sports_Sports_Memorabilia);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Sports_Sports_Memorabilia.writeObject(book);
-                                break;
-                            case "TPA":
-//                                ous = new ObjectOutputStream(Trains_Planes_Automobiles);
-//                                ous.writeUTF(Arrays.toString(arrayCsvFiles));
-                                System.out.println(book.toString());
-                                Trains_Planes_Automobiles.writeObject(book);
-                                break;
-                            default:
-                                reader.close();
-                        }
-
-
-                    }
-                } catch (BadPriceException e) {
-                    System.out.println("Bad Price Exception");
-                } catch (BadYearException e) {
-                    System.out.println("Bad Year Exception.");
-                } catch (BadIsbn10Exception e) {
-                    System.out.println("Bad ISBN-10 Exception.");
-                } catch (BadIsbn13Exception e) {
-                    System.out.println("Bad ISBN-13 Exception.");
-                } catch (Exception e) {
-                    System.out.println("Some other exception" + e);// Catch any other type of exception for debugging
                 }
 
+                if (arrayCsvFiles[3].length() == 10) {
+                    int sum = 0;
+                    for (int i = 0; i < 10; i++) {
+                        char num = arrayCsvFiles[3].charAt(i);
+                        int asciiValue = num - 48;
+                        sum += asciiValue;
+                    }
+                    if (sum % 11 != 0) { // If not multiple of 11 throw an exception
+                        throw new BadIsbn10Exception("Bad ISBN-10 exception");
+                    }
+                }
+                if (arrayCsvFiles[3].length() == 13) {
+                    int sum = 0;
+                    for (int i = 1; i < arrayCsvFiles[3].length(); i++) {
+                        char num = arrayCsvFiles[3].charAt(i);
+                        int asciiValue = num - 48;
+                        sum += asciiValue;
+                    }
+                    if (sum % 13 != 0) { // If not multiple of 13 throw an exception
+                        throw new BadIsbn13Exception("Bad ISBN-13 exception");
+                    }
+
+                }
+
+                Book book = new Book(arrayCsvFiles[0], arrayCsvFiles[1], price, arrayCsvFiles[3], arrayCsvFiles[4], Year);
+
+//                ObjectOutputStream oos = null;
+                try {
+                    switch (book.getGenre()) {
+                        case "CCB":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Cartoons_Comics.csv.ser", true));
+                            outputStreams[0].writeObject(book);
+                            break;
+                        case "HCB":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Hobbies_Collectives.csv.ser", true));
+                            outputStreams[1].writeObject(book);
+                            break;
+                        case "MTV":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Movies_Tv_Books.csv.ser", true));
+                            outputStreams[2].writeObject(book);
+                            break;
+                        case "MRB":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Music_Radio_Books.csv.ser", true));
+                            outputStreams[3].writeObject(book);
+                            break;
+                        case "NEB":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Nostalgia_Eclectic_Books.csv.ser", true));
+                            outputStreams[4].writeObject(book);
+                            break;
+                        case "OTR":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Old_Time_Radio_Books.csv.ser", true));
+                            outputStreams[5].writeObject(book);
+                            break;
+                        case "SSM":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Sports_Sports_Memorabilia.csv.ser", true));
+                            outputStreams[6].writeObject(book);
+                            break;
+                        case "TPA":
+//                            oos = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser", true));
+                            outputStreams[7].writeObject(book);
+                            break;
+                    }
+                    for (ObjectOutputStream item : outputStreams) {
+                        item.close();
+                    }
+//                    if (oos != null) {
+//                        oos.writeObject(book);
+//                        oos.close();
+//                    }
+                } catch (IOException e) {
+                    System.out.println("IO exception switch");
+                    for (ObjectOutputStream item : outputStreams) {
+                        if (item != null) {
+                            try {
+                                item.close();
+                            } catch (IOException ex) {
+                                System.out.println("IO exception");
+                            }
+                        }
+                    }
+//                    if (oos != null) {
+//                        try {
+//                            oos.close();
+//                        } catch (IOException ex) {
+//                            System.out.println("IO exception");
+//                        }
+//                    }
+                }
             }
-            reader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("CSVReader files not found" + e);
+            System.out.println("File Not Found Exceptionn");
         } catch (IOException e) {
             System.out.println("IO exception");
+        } catch (BadPriceException e) {
+            System.out.println("Bad Price Exception");
+        } catch (BadYearException e) {
+            System.out.println("Bad Year Exception");
+        } catch (BadIsbn10Exception e) {
+            System.out.println("Bad ISBN-10 Exception.");
+        } catch (BadIsbn13Exception e) {
+            System.out.println("Bad ISBN-13 Exception.");
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    System.out.println("IO exception");
+                }
+            }
         }
     }
 
     public static void do_part2() {
         String[] arr = {"outputFiles/Cartoons_Comics.csv", "outputFiles/Hobbies_Collectibles.csv", "outputFiles/Movies_TV_Books.csv", "outputFiles/Music_Radio_Books.csv", "outputFiles/Nostalgia_Eclectic_Books.csv", "outputFiles/Old_Time_Radio_Books.csv", "outputFiles/Sports_Sports_Memorabilia.csv", "outputFiles/Trains_Planes_Automobiles.csv"};
-        for (String item : arr){
+        for (String item : arr) {
             CSVReaderPart2(item);
         }
     }
@@ -366,7 +369,7 @@ public class Main {
             for (Book[] item : bookFiles) {
                 int bookCounter = 0;
                 for (Book innerItem : item) {
-                    if (innerItem != null && !innerItem.isEmpty() )
+                    if (innerItem != null && !innerItem.isEmpty())
                         bookCounter++;
                 }
                 System.out.println("items in book List: " + bookCounter);
@@ -384,7 +387,7 @@ public class Main {
         //csvReader();
         do_part1();
         do_part2();
-        do_part3();
+//        do_part3();
 
 
     }
