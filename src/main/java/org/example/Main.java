@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 public class Main {
 
-    static int selectedCSV = 0;
-
+    static int selectedCSV = 1;
+    static Book[][] bookFiles = new Book[8][500]; // array of arrays being filled below
 
     /**
      * @param fileName
@@ -302,7 +302,6 @@ public class Main {
     }
 
 
-    static Book bookFiles[][] = new Book[8][500]; // array of arrays being filled below
     public static void BinaryFileReader_PT3() {
         ObjectInputStream[] filenames;
         int counter = 0;
@@ -364,13 +363,15 @@ public class Main {
         int upTobookNumber = sc.nextInt() -1;
         int counter = 0;
         for (Book book : bookFiles[selectedCSV - 1]){
-            if( book != null && counter <= upTobookNumber)
+            if( book != null && counter <= upTobookNumber )
                 System.out.println(book.toString());
-            else if(counter == upTobookNumber){
-                break;
-            }
             else if(book == null){
                 System.out.println("EOF has been reached");
+                System.out.println();
+                break;
+            }
+            else {
+                System.out.println();
                 break;
             }
             counter ++;
@@ -389,7 +390,7 @@ public class Main {
             System.out.println("-----------------------------\n" +
                     "          Main Menu\n" +
                     "-----------------------------\n" +
-                    " v  View the selected file:" + arr[selectedCSV] + "\n" +
+                    " v  View the selected file:\t" + arr[selectedCSV - 1] + "\n" +
                     " s  Select a file to view\n" +
                     " x  Exit\n" +
                     "-----------------------------");
