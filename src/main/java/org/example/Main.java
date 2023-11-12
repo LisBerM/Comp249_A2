@@ -6,16 +6,15 @@ import java.util.Scanner;
 
 public class Main {
 
-    static int selectedCSV = 1;
+    static int selectedCSV = 1;//attribute for switch in Part 3, to select in submenu.
     static Book[][] bookFiles = new Book[8][500]; // array of arrays being filled below
 
     /**
-     * @param fileName
+     * @param fileName This method checks if there are empty files in the file "part1_input_file_names.txt"  and displays it.
      * @return
      */
     public static boolean is_empty(String fileName) {
         boolean isEmpty = false;
-        //     long lineCount = Files.lines(Paths.get(csvFilePath)).count();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             long lineCount = reader.lines().count();
@@ -31,25 +30,23 @@ public class Main {
     }
 
     /**
-     * @param fileName
+     * @param fileName This method reads the file "part1_input_file_names.txt". Each line is sent to an index in the array arrayCsvFiles[] and returns it.
      * @return
      */
-    // Function to check if its empty or not
 
+    //It separates each line of the text file into different files in the array. In order to be used by other methods, and read the array.
     public static String[] inputFileReader(String fileName) {
         String[] arrayCsvFiles = null;
         try {
 
-            //File csvEmpty = new File("books1996.csv.txt");
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
 
-            String line = reader.readLine(); // first line is always the amount of texts = 16
-            arrayCsvFiles = new String[Integer.parseInt(line)]; // Array initialized to 16
+            String line = reader.readLine(); // first line is always the amount of texts e.g = 16
+            arrayCsvFiles = new String[Integer.parseInt(line)]; // Array initialized to the amount of texts in the file. eg = 16
             int counter = 0;
 
             while ((line = reader.readLine()) != null) {
                 arrayCsvFiles[counter] = line;
-                //System.out.println(line);
                 counter++;
             }
             reader.close();
@@ -61,6 +58,10 @@ public class Main {
         return arrayCsvFiles;
     }
 
+    /**
+     * @param fileName This method throws the different type of Syntax Exceptions. Creates the different files based on genre and the syntax_error.txt file.
+     *                 Reads each file in the array arrayCsvFiles[]. From each file, separates each line into fields.
+     */
     public static void CSVReaderPart1(String fileName) {
         String[] arrayCsvFiles = null;
         BufferedReader reader = null;
@@ -78,15 +79,16 @@ public class Main {
 
             String line;
             int counter = 0;
-            PrintWriter csvWriter= null;
+            PrintWriter csvWriter = null;
 
             while ((line = reader.readLine()) != null) {
                 arrayCsvFiles = line.split(",");
+                String csvLine = null;
                 try {
                     if (arrayCsvFiles.length > 6) {
-                        throw new TooManyFieldsException(" Too many fields in " + Arrays.toString(arrayCsvFiles));
+                        throw new TooManyFieldsException();
                     } else if (arrayCsvFiles.length < 6) {
-                        throw new TooFewFieldsException(" Too few fields in " + Arrays.toString(arrayCsvFiles));
+                        throw new TooFewFieldsException();
                     } else {
 
                         switch (arrayCsvFiles[4]) {
@@ -114,22 +116,24 @@ public class Main {
                             case "TPA":
                                 csvWriter = new PrintWriter(new FileOutputStream(Trains_Planes_Automobiles, true));
                                 break;
+                            default:
+                                throw new UnknownGenreException("Unknown genre.");
+
                         }
 
                         if (csvWriter != null) {
-                            String csvLine = String.join(",", arrayCsvFiles); // Proper CSV format
+                            csvLine = String.join(",", arrayCsvFiles); // Proper CSV format
                             csvWriter.println(csvLine);
                         }
                     }
-                } catch (TooFewFieldsException | TooManyFieldsException e) {
-                        csvWriter = new PrintWriter(new FileOutputStream(syntax_error_file,true));
-                        csvWriter.println(e);
-//                    System.out.println(e);
+                } catch (TooFewFieldsException | TooManyFieldsException | UnknownGenreException e) {
+                    csvWriter = new PrintWriter(new FileOutputStream(syntax_error_file, true));
+                    csvWriter.println("\n\nsyntax error in file : " + fileName + "\n====================" +
+                            "\nError: " + e + "\nRecord: " + Arrays.toString(arrayCsvFiles));
                 } finally {
-                    if(csvWriter != null)
+                    if (csvWriter != null)
                         csvWriter.close();
                 }
-
 
             }
             reader.close();
@@ -139,7 +143,9 @@ public class Main {
             System.out.println("IO exception");
         }
     }
-
+/**
+ * Implements inputFileReader(), is_empty() and CSVReaderPart1() methods.
+ */
     public static void do_part1() {
         String[] arr = inputFileReader("part1_input_file_names.txt");
         for (String file : arr) {
@@ -154,17 +160,18 @@ public class Main {
     // PART 2
 
     /**
-     * CSV reader for part2. Reading the csv files created in Part 1.
-     *
      * @param reader
-     * @param outputStreams
+     * @param outputStreams an array of different binary files created in Part2(). Array sent by Part2().
      * @throws IOException
+     * This method throws the different types of Semantic Exceptions.  If no exception is thrown creates book
+     * object and writes objects to corresponding serialized file (based on genre). Binary files created in do_part2.
      */
+    //if outputStreams is open and closed multiples times, it throws an error, it becomes corrupted.
     public static void CSVReaderPart2(BufferedReader reader, ObjectOutputStream[] outputStreams) throws IOException {
         String line;
         int Year = 0;
         File semantic_error_file = new File("outputBinaryFiles/semantic_error_file.txt");
-        PrintWriter semanticErrorWritter = new PrintWriter(new FileOutputStream(semantic_error_file,true));
+        PrintWriter semanticErrorWritter = new PrintWriter(new FileOutputStream(semantic_error_file, true));
 
         while ((line = reader.readLine()) != null) {
 
@@ -174,7 +181,7 @@ public class Main {
             try {
                 // --- Sieving to check for exceptions, if no exception write to file
                 if (price < 0) {
-                    throw new BadPriceException("The price is negative. Bad Price!");
+                    throw new BadPriceException("The price is negative.");
                 }
                 if (yearString.length() == 4) {
                     Year = Integer.parseInt(yearString);
@@ -206,8 +213,9 @@ public class Main {
                     }
 
                 }
-                // --- End of exxcemption checks
-                // If no exception thrown create book object and write to corresponding serialized file
+                // --- End of exception checks
+                // If no exception thrown creates book object and writes to corresponding serialized file.
+                //Here I can implement the missing field exception and write into syntax error. As the book objects separates each field.
                 Book book = new Book(arrayCsvFiles[0], arrayCsvFiles[1], price, arrayCsvFiles[3], arrayCsvFiles[4], Year);
                 switch (book.getGenre()) {
                     case "CCB":
@@ -243,8 +251,12 @@ public class Main {
         }
     }
 
+    /**
+     * This method creates the binary files. Reads the csv files one by one.  Uses CSVReaderPart2()
+     */
+    //if outputStreams is open and closed multiples times, it throws an error, it becomes corrupted.
     public static void do_part2() {
-        ObjectOutputStream[] outputStreams = new ObjectOutputStream[8];
+        ObjectOutputStream [] outputStreams = new ObjectOutputStream[8];
         BufferedReader reader = null;
 
         try {
@@ -278,6 +290,14 @@ public class Main {
         }
     }
 
+    // PART 3
+
+    /**
+     *
+     * @param fileName
+     * @return
+     * This methods reads the objects (deserializes)
+     */
     public static Book[] deserialize(ObjectInputStream fileName) {
         Book[] books = new Book[500];
         int counter = 0;
@@ -286,14 +306,14 @@ public class Main {
             while (true) {
                 Book book = (Book) fileName.readObject();
                 if (book == null) {
-                    System.out.println("Error Null book");
+                    System.out.println("Error null book");
                     break; // Break if a null book is encountered
                 }
                 books[counter] = new Book(book); // Using copy constructor
                 counter++;
             }
         } catch (EOFException e) {
-            System.out.println("EOF has been reached");
+            System.out.println("EOF has been reached.");
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -302,6 +322,10 @@ public class Main {
     }
 
 
+    /**
+     * This method creates an array of the different binary files. Then reads one by one using the method deserialize() and
+     * the double array bookFiles [][] is being filled to use it later in the menu of Part 3 and submenu.
+     */
     public static void BinaryFileReader_PT3() {
         ObjectInputStream[] filenames;
         int counter = 0;
@@ -332,56 +356,59 @@ public class Main {
         }
 
     }
-    public static void SubMenuCounter( int [] books) {
-        switch (selectedCSV){
+
+    public static void SubMenuCounter(int[] books) {
+        switch (selectedCSV) {
             case 1:
-                System.out.println("viewing: " + " 1  Cartoons_Comics_Books.csv.ser       (" + books[0] +" records)\n");
+                System.out.println("viewing: " + " 1  Cartoons_Comics_Books.csv.ser       (" + books[0] + " records)\n");
                 break;
             case 2:
-                System.out.println("viewing: " +" 2  Hobbies_Collectibles_Books.csv.ser  (" + books[1] +")\n");
+                System.out.println("viewing: " + " 2  Hobbies_Collectibles_Books.csv.ser  (" + books[1] + ")\n");
                 break;
             case 3:
-                System.out.println("viewing: " + " 3  Movies_TV.csv.ser (" + books[2] +") \n");
+                System.out.println("viewing: " + " 3  Movies_TV.csv.ser (" + books[2] + ") \n");
                 break;
             case 4:
-                System.out.println("viewing: " + "4  Music_Radio_Books.csv.ser (" + books[3] +")\n" );
+                System.out.println("viewing: " + "4  Music_Radio_Books.csv.ser (" + books[3] + ")\n");
                 break;
             case 5:
-                System.out.println("viewing: " + " 5  Nostalgia_Eclectic_Books.csv.ser (" + books[4] +")\n");
+                System.out.println("viewing: " + " 5  Nostalgia_Eclectic_Books.csv.ser (" + books[4] + ")\n");
                 break;
             case 6:
-                System.out.println("viewing: " + " 6  Old_Time_Radio.csv.ser (" + books[5] +")\n");
+                System.out.println("viewing: " + " 6  Old_Time_Radio.csv.ser (" + books[5] + ")\n");
                 break;
             case 7:
-                System.out.println("viewing: " +" 7  Sports_Sports_Memorabilia.csv.ser   (" + books[6] +")\n");
+                System.out.println("viewing: " + " 7  Sports_Sports_Memorabilia.csv.ser   (" + books[6] + ")\n");
                 break;
             case 8:
-                System.out.println("viewing: " + " 8  Trains_Planes_Automobiles.csv.ser  (" + books[7] +")\n");
+                System.out.println("viewing: " + " 8  Trains_Planes_Automobiles.csv.ser  (" + books[7] + ")\n");
                 break;
         }
         Scanner sc = new Scanner(System.in);
-        int upTobookNumber = sc.nextInt() -1;
+        int upTobookNumber = sc.nextInt() - 1;
         int counter = 0;
-        for (Book book : bookFiles[selectedCSV - 1]){
-            if( book != null && counter <= upTobookNumber )
+        for (Book book : bookFiles[selectedCSV - 1]) {
+            if (book != null && counter <= upTobookNumber)
                 System.out.println(book.toString());
-            else if(book == null){
+            else if (book == null) {
                 System.out.println("EOF has been reached");
                 System.out.println();
                 break;
-            }
-            else {
+            } else {
                 System.out.println();
                 break;
             }
-            counter ++;
+            counter++;
         }
     }
 
-    public static void menu(){
+    /**
+     * Method for  Main menu. When selecting 's' it counts how many records there are in each binary file.
+     */
+    public static void do_part3() {
         BinaryFileReader_PT3();      // fill bookFiles with books
         String[] arr = {"Cartoons_Comics.csv.ser", "Hobbies_Collectives.csv.ser", "Movies_TV_Books.csv.ser", "Music_Radio_Books.csv.ser", "Nostalgia_Eclectic_Books.csv.ser", "Old_Time_Radio_Books.csv.ser", "Sports_Sports_Memorabilia.csv.ser", "Trains_Planes_Automobiles.csv.ser"};
-        int [] books = new int[8];
+        int[] books = new int[8];
         System.out.println();
         Scanner sc = new Scanner(System.in);
         String input;
@@ -395,12 +422,13 @@ public class Main {
                     " x  Exit\n" +
                     "-----------------------------");
             input = sc.next();
-            switch (input.charAt(0)){
+            switch (input.charAt(0)) {
                 case 'v':
                     break;
                 case 's':
                     // Count amount of books in lists
                     int counter = 0;
+                    //When selecting 's' it counts how many records there are in each binary file.
                     for (Book[] item : bookFiles) {
                         int bookCounter = 0;
                         for (Book innerItem : item) {
@@ -409,19 +437,18 @@ public class Main {
                         }
                         books[counter] = bookCounter;
                         counter++;
-//                        System.out.println("items in book List: " + bookCounter);
                     }
                     System.out.println("------------------------------\n" +
                             "        File Sub-Menu\n" +
                             "------------------------------\n" +
-                            " 1  Cartoons_Comics_Books.csv.ser       (" + books[0] +" records)\n" +
-                            " 2  Hobbies_Collectibles_Books.csv.ser  (" + books[1] +")\n" +
-                            " 3  Movies_TV.csv.ser (" + books[2] +") \n" +
-                            " 4  Music_Radio_Books.csv.ser (" + books[3] +")\n" +
-                            " 5  Nostalgia_Eclectic_Books.csv.ser (" + books[4] +")\n" +
-                            " 6  Old_Time_Radio.csv.ser (" + books[5] +")\n" +
-                            " 7  Sports_Sports_Memorabilia.csv.ser   (" + books[6] +")\n" +
-                            " 8  Trains_Planes_Automobiles.csv.ser  (" + books[7] +")\n" +
+                            " 1  Cartoons_Comics_Books (" + books[0] + ") records\n" +
+                            " 2  Hobbies_Collectibles_Books (" + books[1] + ") records)\n" +
+                            " 3  Movies_TV (" + books[2] + ")  records\n" +
+                            " 4  Music_Radio_Books (" + books[3] + ") records\n" +
+                            " 5  Nostalgia_Eclectic_Books (" + books[4] + ") records\n" +
+                            " 6  Old_Time_Radio (" + books[5] + ") records\n" +
+                            " 7  Sports_Sports_Memorabilia   (" + books[6] + ") records\n" +
+                            " 8  Trains_Planes_Automobiles  (" + books[7] + ") records\n" +
                             " 9  Exit\n" +
                             "------------------------------\n" +
                             "Enter Your Choice: ");
@@ -435,12 +462,9 @@ public class Main {
                     System.out.println("Wrong input, please select v ,s or x. ");
                     break;
             }
-        } while (input.charAt(0) != 'x' );
+        } while (input.charAt(0) != 'x');
     }
 
-    public static void do_part3(){
-        menu();
-    }
 
     public static void main(String[] args) {
         do_part1();

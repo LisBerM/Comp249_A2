@@ -4,7 +4,7 @@ public class TooManyFieldsException extends Exception{
 
     public TooManyFieldsException()
     {
-        super("Too many fields");
+        super();
     }
     public TooManyFieldsException(String errorMessage)
     {

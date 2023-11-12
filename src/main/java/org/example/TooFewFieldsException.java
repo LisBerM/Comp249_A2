@@ -4,7 +4,7 @@ public class TooFewFieldsException extends Exception{
 
     public TooFewFieldsException()
     {
-        super("Too few fields");
+        super();
     }
 
     public TooFewFieldsException(String errorMessage)

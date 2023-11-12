@@ -3,7 +3,7 @@ package org.example;
 public class UnknownGenreException extends Exception{
     public UnknownGenreException()
     {
-        super("unknown genre");
+        super();
     }
     public UnknownGenreException(String errorMessage)
     {
