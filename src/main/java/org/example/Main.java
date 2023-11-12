@@ -30,11 +30,12 @@ public class Main {
     }
 
     /**
-     * @param fileName This method reads the file "part1_input_file_names.txt". Each line is sent to an index in the array arrayCsvFiles[] and returns it.
+     * It separates each line of the text file into different files in the array. In order to be used by other methods, and read the array.
+     * @param fileName
      * @return
      */
 
-    //It separates each line of the text file into different files in the array. In order to be used by other methods, and read the array.
+
     public static String[] inputFileReader(String fileName) {
         String[] arrayCsvFiles = null;
         try {
@@ -59,8 +60,9 @@ public class Main {
     }
 
     /**
-     * @param fileName This method throws the different type of Syntax Exceptions. Creates the different files based on genre and the syntax_error.txt file.
-     *                 Reads each file in the array arrayCsvFiles[]. From each file, separates each line into fields.
+     * This method throws the different type of Syntax Exceptions. Creates the different files based on genre and the syntax_error.txt file.
+     * Reads each file in the array arrayCsvFiles[]. From each file, separates each line into fields.
+     * @param fileName
      */
     public static void CSVReaderPart1(String fileName) {
         String[] arrayCsvFiles = null;
@@ -160,11 +162,11 @@ public class Main {
     // PART 2
 
     /**
+     * This method throws the different types of Semantic Exceptions.  If no exception is thrown creates book
+     * object and writes objects to corresponding serialized file (based on genre). Binary files created in do_part2.
      * @param reader
      * @param outputStreams an array of different binary files created in Part2(). Array sent by Part2().
      * @throws IOException
-     * This method throws the different types of Semantic Exceptions.  If no exception is thrown creates book
-     * object and writes objects to corresponding serialized file (based on genre). Binary files created in do_part2.
      */
     //if outputStreams is open and closed multiples times, it throws an error, it becomes corrupted.
     public static void CSVReaderPart2(BufferedReader reader, ObjectOutputStream[] outputStreams) throws IOException {
@@ -252,7 +254,7 @@ public class Main {
     }
 
     /**
-     * This method creates the binary files. Reads the csv files one by one.  Uses CSVReaderPart2()
+     * This method creates the binary files. Reads the csv files one by one and opens and creates the binary files.  Uses CSVReaderPart2()
      */
     //if outputStreams is open and closed multiples times, it throws an error, it becomes corrupted.
     public static void do_part2() {
@@ -270,7 +272,7 @@ public class Main {
             outputStreams[6] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Sports_Sports_Memorabilia.csv.ser"));
             outputStreams[7] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser"));
 
-            // Loop through filenames to read each of them and sieve through
+            // Loop through filenames to read each of them and sieve(cierne) through
             String[] arr = {"outputFiles/Cartoons_Comics.csv", "outputFiles/Hobbies_Collectives.csv", "outputFiles/Movies_TV_Books.csv", "outputFiles/Music_Radio_Books.csv", "outputFiles/Nostalgia_Eclectic_Books.csv", "outputFiles/Old_Time_Radio_Books.csv", "outputFiles/Sports_Sports_Memorabilia.csv", "outputFiles/Trains_Planes_Automobiles.csv"};
             for (String item : arr) {
                 reader = new BufferedReader(new FileReader(item));
@@ -295,11 +297,11 @@ public class Main {
     /**
      *
      * @param fileName
-     * @return
-     * This methods reads the objects (deserializes)
+     * @return an array of Book objects
+     * This methods reads the objects (deserializes) and creates an array of Book objects and return this array.
      */
     public static Book[] deserialize(ObjectInputStream fileName) {
-        Book[] books = new Book[500];
+        Book[] books = new Book[500];// in order to read the objects of one file.csv.ser. Only reads one.
         int counter = 0;
 
         try {
@@ -323,8 +325,8 @@ public class Main {
 
 
     /**
-     * This method creates an array of the different binary files. Then reads one by one using the method deserialize() and
-     * the double array bookFiles [][] is being filled to use it later in the menu of Part 3 and submenu.
+     * This method  reads one by one using the method deserialize() and
+     * the double array static bookFiles [][] is being filled to use it later in the menu of Part 3 and submenu.
      */
     public static void BinaryFileReader_PT3() {
         ObjectInputStream[] filenames;
@@ -403,7 +405,7 @@ public class Main {
     }
 
     /**
-     * Method for  Main menu. When selecting 's' it counts how many records there are in each binary file.
+     * Method for  Main menu. When selecting 's' it counts how many records there are in each binary file from bookFiles[][].
      */
     public static void do_part3() {
         BinaryFileReader_PT3();      // fill bookFiles with books
