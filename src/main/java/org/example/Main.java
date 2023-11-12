@@ -6,6 +6,9 @@ import java.util.Scanner;
 
 public class Main {
 
+    static int selectedCSV = 0;
+
+
     /**
      * @param fileName
      * @return
@@ -298,9 +301,10 @@ public class Main {
         return books;
     }
 
-    public static void do_part3() {
+
+    static Book bookFiles[][] = new Book[8][500]; // array of arrays being filled below
+    public static void BinaryFileReader_PT3() {
         ObjectInputStream[] filenames;
-        Book bookFiles[][] = new Book[8][500]; // array of arrays
         int counter = 0;
         try {
             filenames = new ObjectInputStream[8];
@@ -314,25 +318,14 @@ public class Main {
             filenames[7] = new ObjectInputStream(new FileInputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser"));
 
             for (ObjectInputStream item : filenames) {
-                bookFiles[counter] = deserialize(item);
+                bookFiles[counter] = deserialize(item); // Saving to static array of Book's after deserialization
                 counter++;
             }
-
             //For each loop to close files
             for (ObjectInputStream item : filenames) {
                 item.close();
             }
 
-
-            // Count amount of books in lists
-            for (Book[] item : bookFiles) {
-                int bookCounter = 0;
-                for (Book innerItem : item) {
-                    if (innerItem != null && !innerItem.isEmpty())
-                        bookCounter++;
-                }
-                System.out.println("items in book List: " + bookCounter);
-            }
         } catch (FileNotFoundException e) {
             System.out.println(e);
         } catch (IOException e) {
@@ -340,36 +333,117 @@ public class Main {
         }
 
     }
+    public static void SubMenuCounter( int [] books) {
+        switch (selectedCSV){
+            case 1:
+                System.out.println("viewing: " + " 1  Cartoons_Comics_Books.csv.ser       (" + books[0] +" records)\n");
+                break;
+            case 2:
+                System.out.println("viewing: " +" 2  Hobbies_Collectibles_Books.csv.ser  (" + books[1] +")\n");
+                break;
+            case 3:
+                System.out.println("viewing: " + " 3  Movies_TV.csv.ser (" + books[2] +") \n");
+                break;
+            case 4:
+                System.out.println("viewing: " + "4  Music_Radio_Books.csv.ser (" + books[3] +")\n" );
+                break;
+            case 5:
+                System.out.println("viewing: " + " 5  Nostalgia_Eclectic_Books.csv.ser (" + books[4] +")\n");
+                break;
+            case 6:
+                System.out.println("viewing: " + " 6  Old_Time_Radio.csv.ser (" + books[5] +")\n");
+                break;
+            case 7:
+                System.out.println("viewing: " +" 7  Sports_Sports_Memorabilia.csv.ser   (" + books[6] +")\n");
+                break;
+            case 8:
+                System.out.println("viewing: " + " 8  Trains_Planes_Automobiles.csv.ser  (" + books[7] +")\n");
+                break;
+        }
+        Scanner sc = new Scanner(System.in);
+        int upTobookNumber = sc.nextInt() -1;
+        int counter = 0;
+        for (Book book : bookFiles[selectedCSV - 1]){
+            if( book != null && counter <= upTobookNumber)
+                System.out.println(book.toString());
+            else if(counter == upTobookNumber){
+                break;
+            }
+            else if(book == null){
+                System.out.println("EOF has been reached");
+                break;
+            }
+            counter ++;
+        }
+    }
 
-    public static void main(String[] args) {
-
-        do_part1();
-        do_part2();
-        do_part3();
-        String menu_1 = "-----------------------------\n" +
-                "          Main Menu\n" +
-                "-----------------------------\n" +
-                " v  View the selected file: Cartoons_Comics_Books.csv.ser (4 records)\n" +
-                " s  Select a file to view\n" +
-                " x  Exit\n" +
-                "-----------------------------";
+    public static void menu(){
+        BinaryFileReader_PT3();      // fill bookFiles with books
+        String[] arr = {"Cartoons_Comics.csv.ser", "Hobbies_Collectives.csv.ser", "Movies_TV_Books.csv.ser", "Music_Radio_Books.csv.ser", "Nostalgia_Eclectic_Books.csv.ser", "Old_Time_Radio_Books.csv.ser", "Sports_Sports_Memorabilia.csv.ser", "Trains_Planes_Automobiles.csv.ser"};
+        int [] books = new int[8];
+        System.out.println();
         Scanner sc = new Scanner(System.in);
         String input;
-       do {
-            System.out.println(menu_1);
+        int submenuOption;
+        do {
+            System.out.println("-----------------------------\n" +
+                    "          Main Menu\n" +
+                    "-----------------------------\n" +
+                    " v  View the selected file:" + arr[selectedCSV] + "\n" +
+                    " s  Select a file to view\n" +
+                    " x  Exit\n" +
+                    "-----------------------------");
             input = sc.next();
             switch (input.charAt(0)){
                 case 'v':
                     break;
                 case 's':
+                    // Count amount of books in lists
+                    int counter = 0;
+                    for (Book[] item : bookFiles) {
+                        int bookCounter = 0;
+                        for (Book innerItem : item) {
+                            if (innerItem != null && !innerItem.isEmpty())
+                                bookCounter++;
+                        }
+                        books[counter] = bookCounter;
+                        counter++;
+//                        System.out.println("items in book List: " + bookCounter);
+                    }
+                    System.out.println("------------------------------\n" +
+                            "        File Sub-Menu\n" +
+                            "------------------------------\n" +
+                            " 1  Cartoons_Comics_Books.csv.ser       (" + books[0] +" records)\n" +
+                            " 2  Hobbies_Collectibles_Books.csv.ser  (" + books[1] +")\n" +
+                            " 3  Movies_TV.csv.ser (" + books[2] +") \n" +
+                            " 4  Music_Radio_Books.csv.ser (" + books[3] +")\n" +
+                            " 5  Nostalgia_Eclectic_Books.csv.ser (" + books[4] +")\n" +
+                            " 6  Old_Time_Radio.csv.ser (" + books[5] +")\n" +
+                            " 7  Sports_Sports_Memorabilia.csv.ser   (" + books[6] +")\n" +
+                            " 8  Trains_Planes_Automobiles.csv.ser  (" + books[7] +")\n" +
+                            " 9  Exit\n" +
+                            "------------------------------\n" +
+                            "Enter Your Choice: ");
+                    submenuOption = sc.nextInt();
+                    selectedCSV = submenuOption;
+                    SubMenuCounter(books);
                     break;
                 case 'x':
                     break;
                 default:
                     System.out.println("Wrong input, please select v ,s or x. ");
-                break;
+                    break;
             }
         } while (input.charAt(0) != 'x' );
+    }
 
+    public static void do_part3(){
+        menu();
+    }
+
+    public static void main(String[] args) {
+        do_part1();
+        do_part2();
+        do_part3();
     }
 }
