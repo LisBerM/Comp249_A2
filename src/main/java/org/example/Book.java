@@ -1,7 +1,10 @@
 package org.example;
 
 import java.io.Serializable;
-
+// -----------------------------------------------------
+// Assignment 2
+// Written by: Liseth Berdeja 40089347
+// -----------------------------------------------------
 public class Book  implements Serializable {
 
     private String title;

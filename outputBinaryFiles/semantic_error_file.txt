@@ -1,0 +1,16 @@
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn13Exception: Bad ISBN-13 exception
+org.example.BadYearException: Year out of Range.
+org.example.BadIsbn13Exception: Bad ISBN-13 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn13Exception: Bad ISBN-13 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn13Exception: Bad ISBN-13 exception
+org.example.BadYearException: Year out of Range.
+org.example.BadIsbn13Exception: Bad ISBN-13 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception
+org.example.BadIsbn13Exception: Bad ISBN-13 exception
+org.example.BadIsbn10Exception: Bad ISBN-10 exception

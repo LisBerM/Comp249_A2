@@ -1,5 +1,14 @@
 package org.example;
-
+// -----------------------------------------------------
+// Assignment 2 COMP 249
+// Written by: Liseth Berdeja 40089347
+// -----------------------------------------------------
+/**
+ *  -----------------------------------------------------
+ *  Assignment 2 COMP 249
+ *  Written by: Liseth Berdeja 40089347
+ *  -----------------------------------------------------
+ */
 import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;

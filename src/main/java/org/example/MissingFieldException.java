@@ -1,5 +1,8 @@
 package org.example;
-
+// -----------------------------------------------------
+// Assignment 2
+// Written by: Liseth Berdeja 40089347
+// -----------------------------------------------------
 public class MissingFieldException extends Exception{
 
     public MissingFieldException()
