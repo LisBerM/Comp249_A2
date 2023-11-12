@@ -2,6 +2,7 @@ package org.example;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
 
@@ -30,8 +31,9 @@ public class Main {
      * @param fileName
      * @return
      */
-    public static String[] inputFileReader(String fileName)// Function to check if its empty or not
-    {
+    // Function to check if its empty or not
+
+    public static String[] inputFileReader(String fileName) {
         String[] arrayCsvFiles = null;
         try {
 
@@ -59,7 +61,6 @@ public class Main {
     public static void CSVReaderPart1(String fileName) {
         String[] arrayCsvFiles = null;
         BufferedReader reader = null;
-        //PrintWriter csvWriter = null;
         File Cartoon_Comics = new File("outputFiles/Cartoons_Comics.csv");
         File Hobbies_Collectives = new File("outputFiles/Hobbies_Collectives.csv");
         File Movies_Tv_Books = new File("outputFiles/Movies_Tv_Books.csv");
@@ -70,12 +71,11 @@ public class Main {
         File Trains_Planes_Automobiles = new File("outputFiles/Trains_Planes_Automobiles.csv");
         File syntax_error_file = new File("outputFiles/syntax_error_file.txt");
         try {
-            //File csvEmpty = new File("books1996.csv.txt");
             reader = new BufferedReader(new FileReader(fileName));
-            //csvWriter = new PrintWriter(new FileOutputStream(new File("/outputFiles/Cartoons_Comics.csv"),true));
 
             String line;
             int counter = 0;
+            PrintWriter csvWriter= null;
 
             while ((line = reader.readLine()) != null) {
                 arrayCsvFiles = line.split(",");
@@ -85,54 +85,46 @@ public class Main {
                     } else if (arrayCsvFiles.length < 6) {
                         throw new TooFewFieldsException(" Too few fields in " + Arrays.toString(arrayCsvFiles));
                     } else {
-                        PrintWriter csvWriter = null;
-
 
                         switch (arrayCsvFiles[4]) {
                             case "CCB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Cartoon_Comics, true));
-//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "HCB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Hobbies_Collectives, true));
-//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "MTV":
                                 csvWriter = new PrintWriter(new FileOutputStream(Movies_Tv_Books, true));
-//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "MRB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Music_Radio_Books, true));
-//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "NEB":
                                 csvWriter = new PrintWriter(new FileOutputStream(Nostalgia_Eclectic_Books, true));
-//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "OTR":
                                 csvWriter = new PrintWriter(new FileOutputStream(Old_Time_Radio_Books, true));
-//                                csvWriter.print(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "SSM":
                                 csvWriter = new PrintWriter(new FileOutputStream(Sports_Sports_Memorabilia, true));
-//                                csvWriter.println(Arrays.toString(arrayCsvFiles));
                                 break;
                             case "TPA":
                                 csvWriter = new PrintWriter(new FileOutputStream(Trains_Planes_Automobiles, true));
-//                                csvWriter.println(Arrays.toString(arrayCsvFiles));
                                 break;
                         }
 
                         if (csvWriter != null) {
                             String csvLine = String.join(",", arrayCsvFiles); // Proper CSV format
                             csvWriter.println(csvLine);
-                            csvWriter.close();
                         }
                     }
-                } catch (TooFewFieldsException e) {
-                    System.out.println(e);
-                } catch (TooManyFieldsException e) {
-                    System.out.println(e);
+                } catch (TooFewFieldsException | TooManyFieldsException e) {
+                        csvWriter = new PrintWriter(new FileOutputStream(syntax_error_file,true));
+                        csvWriter.println(e);
+//                    System.out.println(e);
+                } finally {
+                    if(csvWriter != null)
+                        csvWriter.close();
                 }
 
 
@@ -157,8 +149,8 @@ public class Main {
 
 
     // PART 2
+
     /**
-     *
      * CSV reader for part2. Reading the csv files created in Part 1.
      *
      * @param reader
@@ -166,9 +158,10 @@ public class Main {
      * @throws IOException
      */
     public static void CSVReaderPart2(BufferedReader reader, ObjectOutputStream[] outputStreams) throws IOException {
-
         String line;
         int Year = 0;
+        File semantic_error_file = new File("outputBinaryFiles/semantic_error_file.txt");
+        PrintWriter semanticErrorWritter = new PrintWriter(new FileOutputStream(semantic_error_file,true));
 
         while ((line = reader.readLine()) != null) {
 
@@ -239,14 +232,10 @@ public class Main {
                         outputStreams[7].writeObject(book);
                         break;
                 }
-            } catch (BadPriceException e) {
-                System.out.println("Bad Price Exception");
-            } catch (BadYearException e) {
-                System.out.println("Bad Year Exception");
-            } catch (BadIsbn10Exception e) {
-                System.out.println("Bad ISBN-10 Exception.");
-            } catch (BadIsbn13Exception e) {
-                System.out.println("Bad ISBN-13 Exception.");
+            } catch (BadPriceException | BadYearException | BadIsbn10Exception | BadIsbn13Exception e) {
+                semanticErrorWritter.println(e);
+            } finally {
+                semanticErrorWritter.close();
             }
         }
     }
@@ -357,7 +346,30 @@ public class Main {
         do_part1();
         do_part2();
         do_part3();
-
+        String menu_1 = "-----------------------------\n" +
+                "          Main Menu\n" +
+                "-----------------------------\n" +
+                " v  View the selected file: Cartoons_Comics_Books.csv.ser (4 records)\n" +
+                " s  Select a file to view\n" +
+                " x  Exit\n" +
+                "-----------------------------";
+        Scanner sc = new Scanner(System.in);
+        String input;
+       do {
+            System.out.println(menu_1);
+            input = sc.next();
+            switch (input.charAt(0)){
+                case 'v':
+                    break;
+                case 's':
+                    break;
+                case 'x':
+                    break;
+                default:
+                    System.out.println("Wrong input, please select v ,s or x. ");
+                break;
+            }
+        } while (input.charAt(0) != 'x' );
 
     }
 }
