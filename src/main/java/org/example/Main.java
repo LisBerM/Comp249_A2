@@ -168,7 +168,7 @@ public class Main {
     }
 
 
-    // PART 2
+    // ------------------------  PART 2 -----------------------------------------------------
 
     /**
      * This method throws the different types of Semantic Exceptions.  If no exception is thrown creates book
@@ -282,7 +282,9 @@ public class Main {
             outputStreams[7] = new ObjectOutputStream(new FileOutputStream("outputBinaryFiles/Trains_Planes_Automobiles.csv.ser"));
 
             // Loop through filenames to read each of them and sieve(cierne) through
-            String[] arr = {"outputFiles/Cartoons_Comics.csv", "outputFiles/Hobbies_Collectives.csv", "outputFiles/Movies_TV_Books.csv", "outputFiles/Music_Radio_Books.csv", "outputFiles/Nostalgia_Eclectic_Books.csv", "outputFiles/Old_Time_Radio_Books.csv", "outputFiles/Sports_Sports_Memorabilia.csv", "outputFiles/Trains_Planes_Automobiles.csv"};
+            String[] arr = {"outputFiles/Cartoons_Comics.csv", "outputFiles/Hobbies_Collectives.csv", "outputFiles/Movies_TV_Books.csv",
+                    "outputFiles/Music_Radio_Books.csv", "outputFiles/Nostalgia_Eclectic_Books.csv", "outputFiles/Old_Time_Radio_Books.csv",
+                    "outputFiles/Sports_Sports_Memorabilia.csv", "outputFiles/Trains_Planes_Automobiles.csv"};
             for (String item : arr) {
                 reader = new BufferedReader(new FileReader(item));
                 CSVReaderPart2(reader, outputStreams);
@@ -301,7 +303,7 @@ public class Main {
         }
     }
 
-    // PART 3
+    // ------------------------  PART 3 -----------------------------------------------------
 
     /**
      *
